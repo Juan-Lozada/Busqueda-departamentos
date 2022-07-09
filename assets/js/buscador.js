@@ -1,5 +1,5 @@
 
-  let propiedades = [
+  let propiedadesJSON = [
     {name: "Casa de campo", description: "Un lugar ideal para descansar de la ciudad", src:"https://www.construyehogar.com/wp-content/uploads/2020/02/Dise%C3%B1o-casa-en-ladera.jpg",
     rooms: 2, m: 170},
     
@@ -18,15 +18,33 @@
      {name: "Mansión", description: "Vive una vida lujosa en la mansión de tus sueños ",src:"https://resizer.glanacion.com/resizer/fhK-tSVag_8UGJjPMgWrspslPoU=/768x0/filters:quality(80)/cloudfront-us-east-1.images.arcpublishing.com/lanacionar/CUXVMXQE4JD5XIXX4X3PDZAVMY.jpg",
      rooms: 5, m: 500}
   ];
-
-  let cardDpto = document.querySelector('#propiedades');
-  let html = "";
-  let propiedadSelect;
   
+
+  // --- Carga inicial
+  document.addEventListener('DOMContentLoaded', (event) =>{
+    
+    const btnBuscar = document.querySelector("#buscar");
+    const cardDpto = document.querySelector('.propiedades');
+    
+    btnBuscar.addEventListener('click', buscar)
+    cargaInicial(cardDpto);
+  });
+
+ //--- Cargar documentos
+  function cargaInicial(cardDpto) {
+
+    let html = "";
+    for (const propiedad of propiedadesJSON) {
+      html += cardFunction(propiedad);
+    }
+    console.log(html)
+    cardDpto.innerHTML = html;
+  }
+
 
   //--- Funcion para cargar las cards
   function cardFunction(propiedad){
-    html += `
+    return`
         <div class="propiedad">
             <div class="img" style="background-image: url('${propiedad.src}')"></div>
             <section>
@@ -40,69 +58,49 @@
             </section>
         </div>
     `;
-
-    cardDpto.innerHTML = html
   };
 
-  //--- Cargar documentos
-  window.onload = function cargar(){
-    for (let propiedad of propiedades){
-            cardFunction(propiedad);
-            cardDpto.innerHTML = html;
+
+    //--- Boton Buscar
+    
+
+    function buscar() { 
+        
+        const inputHabitaciones = document.querySelector('#habitaciones').value;
+        const desdeMetros2 = document.querySelector('#desdeMetros2').value;
+        const hastaMetros2 = document.querySelector('#hastaMetros2').value; 
+        
+        
+        if( inputHabitaciones === "" || desdeMetros2 === "" || hastaMetros2 === "") {
+            alert("por favor, llene todos los campos")
+            return;
         }
-    html = "";
+
+        if(isNaN(inputHabitaciones) || isNaN(desdeMetros2) || isNaN(hastaMetros2)){
+            alert("Los datos ingresados deben ser numericos")
+            return
+        }
+        console.log("inputCuartos: " + inputHabitaciones);
+        console.log("inputDesdeMetros: " + desdeMetros2);
+        console.log("inputHastaMetros: " + hastaMetros2);
+        
+        
+        let html = "";
+        let total = 0;
+        
+
+        for (const propiedad of propiedadesJSON){
+            if (propiedad.rooms >= inputHabitaciones && (propiedad.m >= desdeMetros2 && propiedad.m <= hastaMetros2)){
+                html += cardFunction(propiedad);
+                total ++;
+                console.log(total)
+            }
+            
+            total = document.getElementById("total").innerHTML = "Total: " + total;
+        } 
+        
+        const propiedades = document.querySelector(".propiedades");
+        propiedades.innerHTML = html;
     }
 
-    
-    //--- Boton Buscar
-    let buscarButton = document.querySelector('#buscar');
 
-    buscarButton.addEventListener('click', function buscar() {
-
-        html = '';
-        let total = "";
-
-        let inputHabitaciones = Number(document.querySelector('#habitaciones').value) ;
-        let desdeMetros2 = Number(document.querySelector('#desdeMetros2').value) ;
-        let hastaMetros2 = Number(document.querySelector('#hastaMetros2').value) ;
-       
-
-        if (inputHabitaciones == "" || desdeMetros2 == "" || hastaMetros2 == "") {
-            alert("por favor, rellenar todos los campos")
-            return
-        }  else if 
-            ( total == 0 || total == null || total == "") {
-                alert("No se encontraron resultados")
-                return
-            } else {
-                propiedadSelect = propiedades.filter(propiedad => {         
-                return  propiedad.rooms >= inputHabitaciones && (propiedad.m >= desdeMetros2 && propiedad.m <= hastaMetros2 )
-                
-            })
-            console.log(propiedadSelect)
-            for(let propiedad of propiedadSelect){
-                cardFunction(propiedad)
-                }
-            total = propiedadSelect.length
-            document.querySelector('#total').innerHTML = "total: " + total;
-        }
-    });
-
-
-    //--- Boton reinicio de busqueda 
-
-    document.getElementById("resetButton").addEventListener("click", function () {
-        for (let propiedad of propiedades) {
-          cardFunction(propiedad);
-          cardDpto.innerHTML = html;
-          cargar();
-          document.getElementById("total").innerHTML = "Total: " + propiedades.length;
-          document.getElementById("inputHAbitaciones").value = "";
-          document.getElementById("desdeMetros2").value = "";
-          document.getElementById("hastaMetros2").value = "";
-          
-        }
-        /*Se reinicia el template*/
-        html=""
-        
-      });
