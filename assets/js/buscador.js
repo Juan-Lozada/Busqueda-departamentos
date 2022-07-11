@@ -17,7 +17,7 @@
     
      {name: "Mansión", description: "Vive una vida lujosa en la mansión de tus sueños ",src:"https://resizer.glanacion.com/resizer/fhK-tSVag_8UGJjPMgWrspslPoU=/768x0/filters:quality(80)/cloudfront-us-east-1.images.arcpublishing.com/lanacionar/CUXVMXQE4JD5XIXX4X3PDZAVMY.jpg",
      rooms: 5, m: 500}
-  ];
+    ];
   
 
   // --- Carga inicial
@@ -93,14 +93,10 @@
             if (propiedad.rooms >= inputHabitaciones && (propiedad.m >= desdeMetros2 && propiedad.m <= hastaMetros2)){
                 html += cardFunction(propiedad);
                 total ++;
-                console.log(total)
+                document.querySelector("#total").innerHTML = "total: " + total;
             }
-            
-            total = document.getElementById("total").innerHTML = "Total: " + total;
         } 
         
         const propiedades = document.querySelector(".propiedades");
         propiedades.innerHTML = html;
     }
-
-
